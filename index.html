@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="description" content="Interactive Sorting Algorithm Visualizer with sound, themes, step mode, race mode – Bubble, Merge, Quick, Heap, Shell, Radix, Counting, Bucket, Bogo and more."/>
+  <title>AlgoVisualizer – Sorting Algorithm Visualizer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+
+<div class="aurora" aria-hidden="true">
+  <div class="aurora-blob blob-1"></div>
+  <div class="aurora-blob blob-2"></div>
+  <div class="aurora-blob blob-3"></div>
+  <div class="aurora-blob blob-4"></div>
+</div>
+<div class="cursor-glow" id="cursorGlow"></div>
+
+<!-- ── HEADER ─────────────────────────────────────────────────────── -->
+<header class="header">
+  <div class="header-inner">
+    <div class="logo">
+      <span class="logo-icon" aria-hidden="true">⬡</span>
+      <span class="logo-text" data-text="AlgoVisualizer">AlgoVisualizer</span>
+    </div>
+    <div class="header-right">
+      <!-- Themes -->
+      <div class="theme-btns" role="group" aria-label="Color theme">
+        <button class="theme-btn active" data-theme="dark"    title="Dark">🌙</button>
+        <button class="theme-btn"        data-theme="cyberpunk" title="Cyberpunk">🌈</button>
+        <button class="theme-btn"        data-theme="ocean"   title="Ocean">🌊</button>
+        <button class="theme-btn"        data-theme="light"   title="Light">☀️</button>
+      </div>
+      <!-- Sound toggle -->
+      <button class="icon-btn" id="soundBtn" title="Toggle sound" aria-pressed="false">🔇</button>
+      <span class="live-pill" id="livePill"><span class="live-dot"></span> Ready</span>
+      <div class="header-badge">v3.0</div>
+    </div>
+  </div>
+</header>
+
+<!-- ── MAIN ───────────────────────────────────────────────────────── -->
+<main class="main">
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="hero-eyebrow">
+      <span class="eyebrow-tag">Interactive</span>
+    </div>
+    <h1 class="hero-title">Sorting Algorithm <span class="gradient-text" data-text="Visualizer">Visualizer</span></h1>
+    <p class="hero-subtitle">Watch algorithms breathe — step by step, bar by bar.</p>
+    <div class="hero-decoration" aria-hidden="true">
+      <div class="hero-ring ring-1"></div><div class="hero-ring ring-2"></div><div class="hero-ring ring-3"></div>
+    </div>
+  </section>
+
+  <!-- Controls Panel -->
+  <section class="controls-panel" id="controlsPanel">
+
+    <!-- Algorithms (auto-generated) -->
+    <div class="control-group">
+      <label class="control-label">Algorithm</label>
+      <div class="algo-buttons" id="algoButtons"></div>
+    </div>
+
+    <!-- Array Presets -->
+    <div class="control-group">
+      <label class="control-label">Array Preset</label>
+      <div class="preset-buttons" id="presetButtons">
+        <button class="preset-btn active" data-preset="random">🎲 Random</button>
+        <button class="preset-btn" data-preset="reversed">🔽 Reversed</button>
+        <button class="preset-btn" data-preset="nearly">〰️ Nearly Sorted</button>
+        <button class="preset-btn" data-preset="few">🎯 Few Unique</button>
+        <button class="preset-btn" data-preset="sawtooth">⚡ Sawtooth</button>
+        <button class="preset-btn" data-preset="custom">✏️ Custom</button>
+      </div>
+      <!-- Custom input (hidden until custom preset selected) -->
+      <div class="custom-input-row" id="customInputRow" style="display:none">
+        <input type="text" id="customArrayInput" class="custom-input" placeholder="e.g. 45, 12, 88, 3, 67, 55, 20" aria-label="Custom array values"/>
+        <button class="btn btn-sm btn-secondary" id="applyCustomBtn">Apply</button>
+      </div>
+    </div>
+
+    <!-- Sliders -->
+    <div class="sliders-row">
+      <div class="slider-group">
+        <label class="control-label" for="arraySize">Array Size <span class="slider-value" id="arraySizeValue">60</span></label>
+        <input type="range" id="arraySize" class="slider" min="5" max="200" value="60"/>
+      </div>
+      <div class="slider-group">
+        <label class="control-label" for="speed">Speed <span class="slider-value" id="speedValue">Medium</span></label>
+        <input type="range" id="speed" class="slider" min="1" max="5" value="3"/>
+      </div>
+    </div>
+
+    <!-- Action Row -->
+    <div class="action-row">
+      <button class="btn btn-secondary" id="generateBtn">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M8 16H3v5"/></svg>
+        Generate
+      </button>
+      <button class="btn btn-primary" id="sortBtn">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+        Sort
+      </button>
+      <button class="btn btn-pause" id="pauseBtn" disabled>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
+        Pause
+      </button>
+      <button class="btn btn-danger" id="stopBtn" disabled>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="6" y="6" width="12" height="12"/></svg>
+        Stop
+      </button>
+      <button class="btn btn-step" id="stepModeBtn" title="Toggle step-by-step mode">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        Step Mode
+      </button>
+      <button class="btn btn-step-next" id="nextStepBtn" disabled title="Advance one step">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"/><line x1="19" y1="3" x2="19" y2="21"/></svg>
+        Next
+      </button>
+      <button class="btn btn-secondary btn-icon" id="shareBtn" title="Copy shareable URL">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+        Share
+      </button>
+    </div>
+  </section>
+
+  <!-- Race Mode Panel -->
+  <div class="race-panel" id="racePanel">
+    <button class="race-toggle" id="raceToggle">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+      Race Mode
+      <svg class="race-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+    </button>
+    <div class="race-body" id="raceBody" style="display:none">
+      <div class="race-setup">
+        <div class="race-algo-pick">
+          <label class="control-label">Challenger Algorithm</label>
+          <select class="race-select" id="raceChallenger"></select>
+        </div>
+        <button class="btn btn-race" id="raceBtn">🏁 Start Race</button>
+      </div>
+      <div class="race-result" id="raceResult" style="display:none"></div>
+    </div>
+  </div>
+
+  <!-- Stats Bar -->
+  <div class="stats-bar">
+    <div class="stat-item"><span class="stat-icon">🔁</span><span class="stat-label">Comparisons</span><span class="stat-value" id="comparisons">0</span></div>
+    <div class="stat-divider"></div>
+    <div class="stat-item"><span class="stat-icon">🔄</span><span class="stat-label">Swaps / Writes</span><span class="stat-value" id="swaps">0</span></div>
+    <div class="stat-divider"></div>
+    <div class="stat-item"><span class="stat-icon">⏱️</span><span class="stat-label">Time</span><span class="stat-value" id="elapsed">0.00s</span></div>
+    <div class="stat-divider"></div>
+    <div class="stat-item"><span class="stat-icon">📊</span><span class="stat-label">Complexity</span><span class="stat-value complexity" id="complexity">O(n²)</span></div>
+  </div>
+
+  <!-- Visualizer -->
+  <section class="visualizer-container" id="vizContainer">
+    <div class="sort-progress-track"><div class="sort-progress-fill" id="sortProgress"></div></div>
+    <div class="scanlines" aria-hidden="true"></div>
+    <canvas class="confetti-canvas" id="confettiCanvas"></canvas>
+    <div class="visualizer" id="visualizer"></div>
+    <div class="status-message" id="statusMessage">Generate an array to get started!</div>
+  </section>
+  <div class="bar-tooltip" id="barTooltip"></div>
+
+  <!-- Info Card -->
+  <section class="info-cards"><div class="info-card" id="infoCard"></div></section>
+
+  <!-- Legend -->
+  <div class="legend">
+    <div class="legend-item"><span class="legend-dot default"></span> Unsorted</div>
+    <div class="legend-item"><span class="legend-dot comparing"></span> Comparing</div>
+    <div class="legend-item"><span class="legend-dot swapping"></span> Swapping / Write</div>
+    <div class="legend-item"><span class="legend-dot pivot"></span> Pivot / Bucket</div>
+    <div class="legend-item"><span class="legend-dot sorted"></span> Sorted</div>
+  </div>
+
+  <!-- Sort History -->
+  <section class="history-panel" id="historyPanel">
+    <div class="history-header">
+      <span class="history-title">📋 Sort History</span>
+      <div style="display:flex;gap:8px">
+        <button class="history-clear" id="exportCsvBtn">⬇ Export CSV</button>
+        <button class="history-clear" id="historyClear">Clear</button>
+      </div>
+    </div>
+    <div class="history-empty" id="historyEmpty">No sorts run yet — start sorting to see history here.</div>
+    <div class="history-table-wrap">
+      <table class="history-table" id="historyTable">
+        <thead><tr><th>#</th><th>Algorithm</th><th>Preset</th><th>Size</th><th>Comparisons</th><th>Swaps/Writes</th><th>Time</th></tr></thead>
+        <tbody id="historyBody"></tbody>
+      </table>
+    </div>
+  </section>
+
+</main>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <p>Built with <span class="heart">♥</span> using Vanilla JS &nbsp;·&nbsp; Souven Rej &nbsp;·&nbsp; 2024</p>
+    <div class="footer-dots" aria-hidden="true"><span></span><span></span><span></span></div>
+  </div>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>
